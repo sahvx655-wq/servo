@@ -49,12 +49,12 @@ pub(crate) struct HarfbuzzGlyphShapingResult {
 }
 
 impl HarfbuzzGlyphShapingResult {
-    /// Create a new [`ShapedGlyphData`] from the given HarfBuzz buffer.
+    /// Create a new [`HarfbuzzGlyphShapingResult`] from the given HarfBuzz buffer.
     ///
     /// # Safety
     ///
     /// - Passing an invalid buffer pointer to this function results in undefined behavior.
-    /// - This function takes ownership of the buffer and the ShapedGlyphData destroys the buffer when dropped
+    /// - This function takes ownership of the buffer and the HarfbuzzGlyphShapingResult destroys the buffer when dropped
     ///   so the pointer must an owned pointer and must not be used after being passed to this function
     unsafe fn new(buffer: *mut hb_buffer_t) -> HarfbuzzGlyphShapingResult {
         let mut glyph_count = 0;
@@ -243,7 +243,7 @@ impl Shaper {
     }
 
     /// Calculate the layout metrics associated with the given text with the [`Shaper`]s font.
-    fn shaped_glyph_data(
+    pub(crate) fn shaped_glyph_data(
         &self,
         text: &str,
         options: &ShapingOptions,
@@ -300,6 +300,10 @@ impl Shaper {
 
     pub(crate) fn shape_text(&self, text: &str, options: &ShapingOptions) -> ShapedText {
         ShapedText::with_shaped_glyph_data(text, options, &self.shaped_glyph_data(text, options))
+    }
+
+    pub(crate) fn font(&self) -> &Font {
+        unsafe { &(*self.font) }
     }
 
     pub(crate) fn baseline(&self) -> Option<FontBaseline> {
