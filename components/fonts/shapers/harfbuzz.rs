@@ -298,10 +298,12 @@ impl Shaper {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn shape_text(&self, text: &str, options: &ShapingOptions) -> ShapedText {
         ShapedText::with_shaped_glyph_data(text, options, &self.shaped_glyph_data(text, options))
     }
 
+    #[allow(dead_code)]
     pub(crate) fn font(&self) -> &Font {
         unsafe { &(*self.font) }
     }
